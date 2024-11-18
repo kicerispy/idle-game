@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Idle Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #282c34;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #61dafb;
+    }
+    #resource-display {
+      font-size: 24px;
+      margin: 20px 0;
+    }
+    .button {
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #61dafb;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .button:disabled {
+      background-color: #555;
+      color: #777;
+      cursor: not-allowed;
+    }
+    .upgrade {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Idle Resource Builder</h1>
+  <div id="resource-display">Resources: 0</div>
+  <button id="click-button" class="button">Gather Resources</button>
+  
+  <div id="upgrades">
+    <div class="upgrade">
+      <button id="auto-clicker" class="button" disabled>Auto Gatherer (Cost: 50)</button>
+    </div>
+    <div class="upgrade">
+      <button id="double-resources" class="button" disabled>Double Resources (Cost: 100)</button>
+    </div>
+  </div>
+
+  <script>
+    // Initialize variables
+    let resources = 0;
+    let resourcesPerClick = 1;
+    let autoClickerCost = 50;
+    let doubleResourcesCost = 100;
+    let autoClickerActive = false;
+
+    // DOM Elements
+    const resourceDisplay = document.getElementById('resource-display');
+    const clickButton = document.getElementById('click-button');
+    const autoClickerButton = document.getElementById('auto-clicker');
+    const doubleResourcesButton = document.getElementById('double-resources');
+
+    // Update resource display
+    function updateDisplay() {
+      resourceDisplay.textContent = `Resources: ${resources}`;
+      autoClickerButton.disabled = resources < autoClickerCost;
+      doubleResourcesButton.disabled = resources < doubleResourcesCost;
+    }
+
+    // Click button logic
+    clickButton.addEventListener('click', () => {
+      resources += resourcesPerClick;
+      updateDisplay();
+    });
+
+    // Auto Gatherer logic
+    autoClickerButton.addEventListener('click', () => {
+      if (resources >= autoClickerCost) {
+        resources -= autoClickerCost;
+        autoClickerCost *= 2;
+        autoClickerButton.textContent = `Auto Gatherer (Cost: ${autoClickerCost})`;
+        updateDisplay();
+
+        if (!autoClickerActive) {
+          autoClickerActive = true;
+          setInterval(() => {
+            resources += resourcesPerClick;
+            updateDisplay();
+          }, 1000);
+        }
+      }
+    });
+
+    // Double Resources logic
+    doubleResourcesButton.addEventListener('click', () => {
+      if (resources >= doubleResourcesCost) {
+        resources -= doubleResourcesCost;
+        doubleResourcesCost *= 2;
+        resourcesPerClick *= 2;
+        doubleResourcesButton.textContent = `Double Resources (Cost: ${doubleResourcesCost})`;
+        updateDisplay();
+      }
+    });
+
+    // Initial display update
+    updateDisplay();
+  </script>
+</body>
+</html>
